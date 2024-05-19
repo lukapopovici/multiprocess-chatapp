@@ -1,5 +1,3 @@
-# client.py
-
 from multiprocessing.managers import BaseManager
 from mess import Message, Request
 
@@ -7,10 +5,11 @@ class QueueManager(BaseManager):
     pass
 
 class Client:
-    def __init__(self, address: str, port: int, authkey: bytes):
+    def __init__(self, address: str, port: int, authkey: bytes, sender: str):
         self.address = address
         self.port = port
         self.authkey = authkey
+        self.sender = sender
         self.manager = None
         self.queue = None
 
@@ -22,11 +21,19 @@ class Client:
         self.queue = self.manager.get_queue()
         print("Connected to the queue manager.")
 
-    def send_request(self, sender: str, receiver: str, number: int):
+    def send_request(self, receiver: str, number: int):
         if self.queue:
-            request = Request(sender=sender, receiver=receiver, number=number)
+            request = Request(sender=self.sender, receiver=receiver, number=number)
             self.queue.put(request)
             print(f"Sent: {request}")
+        else:
+            print("Queue not connected.")
+    
+    def send_message(self, receiver: str, message: str):
+        if self.queue:
+            message = Message(sender=self.sender, receiver=receiver, message=message)
+            self.queue.put(message)
+            print(f"Sent: {message}")
         else:
             print("Queue not connected.")
 
@@ -34,19 +41,25 @@ class Client:
         if self.queue:
             message = self.queue.get()
             if isinstance(message, Message):
-                print(f"Received: {message}")
-                return message
+                message_lines = message.message.split('\n')
+                print("Received:")
+                for line in message_lines[:10]:
+                    print(line)
             else:
-                print("Received an unknown type of message.")
-                return None
+                print(message)
         else:
             print("Queue not connected.")
             return None
 
 if __name__ == '__main__':
-    client = Client('localhost', 50000, b'your_secret_key')
+    client = Client('localhost', 50000, b'your_secret_key', sender='Luka')
     client.connect()
-    
-    # Example usage:
-    client.send_request(sender="Client1", receiver="Server", number=1)
-    message = client.receive_message()
+
+    while True:
+            client.send_request(receiver="Server", number=10)
+            client.receive_message()        
+            print("[*]")
+            my_message = input("Enter your message: ")
+            client.send_message(receiver="Server", message=my_message)
+            
+           
