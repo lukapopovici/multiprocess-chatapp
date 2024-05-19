@@ -25,8 +25,10 @@ class Worker(mp.Process):
         while True:
             request = self.message_queue.get()
             if request is None:
+                print("Case 1: Nu pot sa interpretez")
                 break
             if isinstance(request, Request):
+                print("Case 3: Request toate conversatiile cu receiverul")
                 self.cursor.execute('''
                     SELECT sender, receiver, message FROM messages 
                     WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)
@@ -39,13 +41,13 @@ class Worker(mp.Process):
                 response_message = f"{messages_text}"
                 response = Message(sender=request.receiver, receiver=request.sender, message=response_message)
 
-                #check if response is not null
                 if response:
                     self.message_queue.put(response_message)
                 else:
                     self.message_queue.put("No messages found")
 
             if isinstance(request, Message):
+                    print("Case 2: Mesaj de pus in baza de date")
                     self.cursor.execute('''
                         INSERT INTO messages (sender, receiver, message) VALUES (?, ?, ?)
                     ''', (request.sender, request.receiver, request.message))

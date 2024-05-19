@@ -1,3 +1,4 @@
+#pentru testare
 from multiprocessing.managers import BaseManager
 from mess import Message, Request
 
@@ -48,15 +49,13 @@ class Client:
                 print(message)
         else:
             print("Queue not connected.")
-            return None
 
 if __name__ == '__main__':
-    client = Client('localhost', 50000, b'your_secret_key', sender='Luka')
+    client = Client('localhost', 50000, b'your_secret_key', sender='Sebi')
     while True:
             client.connect()
-            client.send_request(receiver="Sebi", number=10)
+            client.send_request(receiver="Luka", number=10)
             client.receive_message()        
             print("[*]")
             my_message = input("Enter your message: ")
-            client.send_message(receiver="Sebi", message=my_message)
-            
+            client.send_message(receiver="Luka", message=my_message)
