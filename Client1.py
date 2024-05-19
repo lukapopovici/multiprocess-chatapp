@@ -49,14 +49,23 @@ class Client:
         else:
             print("Queue not connected.")
             return None
+        
+    def Send_And_Refresh(self, receiver): 
+        self.connect()
+        self.send_request(receiver, number=10)
+        self.receive_message()        
+        print("[*]")
+        my_message = input("Enter your message: ")
+        self.send_message(receiver, message=my_message)
+
+    def Refresh(self, receiver):
+        input("Press Enter to refresh")
+        self.connect()
+        self.send_request(receiver, number=10)
+        self.receive_message()
 
 if __name__ == '__main__':
     client = Client('localhost', 50000, b'your_secret_key', sender='Luka')
     while True:
-            client.connect()
-            client.send_request(receiver="Sebi", number=10)
-            client.receive_message()        
-            print("[*]")
-            my_message = input("Enter your message: ")
-            client.send_message(receiver="Sebi", message=my_message)
+            client.Refresh("Sebi")   
             
