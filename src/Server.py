@@ -1,7 +1,7 @@
 import multiprocessing as mp
 from multiprocessing.managers import BaseManager
 import sqlite3
-from mess import Message, Request
+from mess import Message_Request as Message, History_Request as Request, Friend_Request
 
 class Worker(mp.Process):
     def __init__(self, message_queue):
@@ -27,6 +27,14 @@ class Worker(mp.Process):
             if request is None:
                 print("Case 1: Nu pot sa interpretez")
                 break
+            if isinstance(request, Friend_Request):
+                print("Case 4: Request toti oamenii cu care senderul a vorbit")
+                self.cursor.execute('''SELECT DISTINCT receiver FROM messages WHERE sender = ?''', (request.sender,))
+                friends = self.cursor.fetchall()
+                friends_text = "\n".join([f"{friend[0]}" for friend in friends])
+                response_message = f"{friends_text}"
+                self.message_queue.put(response_message)
+                
             if isinstance(request, Request):
                 print("Case 3: Request toate conversatiile cu receiverul")
                 self.cursor.execute('''

@@ -1,6 +1,6 @@
-#clasa cu ADT-uri pentru mesaje
+#clasa cu ADT-uri pentru mesaje si tupuri de cerei
 
-class Message:
+class Message_Request:
     def __init__(self, sender: str, receiver: str, message: str):
         self.sender = sender
         self.receiver = receiver
@@ -28,7 +28,7 @@ class Message:
         return self.message
 
 
-class Request:
+class History_Request:
     def __init__(self, sender: str, receiver: str, number: int):
         self.sender = sender
         self.receiver = receiver
@@ -40,11 +40,7 @@ class Request:
     def __str__(self):
         return f"{self.number}"
 
-    def __eq__(self, other):
-        if isinstance(other, Request):
-            return (self.sender == other.sender and self.receiver == other.receiver and self.number == other.number)
-        return False
-
-    def __hash__(self):
-        return hash((self.sender, self.receiver, self.number))
-
+    
+class Friend_Request:
+    def __init__(self, sender: str):
+        self.sender = sender

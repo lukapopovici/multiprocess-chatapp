@@ -1,6 +1,6 @@
-#pentru testare
+#pentru testare, un al doilea client care sa comunice cu serverul prin primul
 from multiprocessing.managers import BaseManager
-from mess import Message, Request
+from mess import Message_Request as Message, History_Request as Request, Friend_Request
 
 class QueueManager(BaseManager):
     pass

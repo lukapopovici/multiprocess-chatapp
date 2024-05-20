@@ -1,5 +1,5 @@
 from multiprocessing.managers import BaseManager
-from mess import Message, Request
+from mess import Message_Request as Message, History_Request as Request, Friend_Request
 
 class QueueManager(BaseManager):
     pass
@@ -19,6 +19,13 @@ class Client:
         self.manager.connect()
         self.queue = self.manager.get_queue()
         print("Connected to the queue manager.")
+    def send_friend_request(self, receiver: str):
+        if self.queue:
+            request = Friend_Request(sender=self.sender)
+            self.queue.put(request)
+            print(f"Sent: {request}")
+        else:
+            print("Queue not connected.")
 
     def send_request(self, receiver: str, number: int):
         if self.queue:
@@ -51,6 +58,7 @@ class Client:
             return None
         
     def Send_And_Refresh(self, receiver): 
+        #trimit un mesaj in server si dau refresh la mesajele de pe ecran
         self.connect()
         self.send_request(receiver, number=10)
         self.receive_message()        
@@ -61,6 +69,11 @@ class Client:
     def Refresh(self, receiver):
         input("Press Enter to refresh")
         self.connect()
+        #Fac request si cer toti prietenii 
+        self.send_friend_request(receiver)
+        self.receive_message()
+
+        #Fac request si cer ultimele 10 mesaje cu pritenul selectat in mod curent
         self.send_request(receiver, number=10)
         self.receive_message()
 
