@@ -8,12 +8,13 @@ class SimpleInterface(QWidget):
         super().__init__()
         self.client = Client('localhost', 50000, b'your_secret_key', sender='Luka')
         self.client.RefreshFriends()
-        print("asdasdasdaas")
         self.initUI()
 
     def initUI(self):
         mainLayout = QVBoxLayout()
-        self.label = QLabel('TEXT')
+        self.label = QLabel(
+            f"Conversations:\n{self.formatConversations(self.client.conversations)}"
+        )
         middleLayout = QHBoxLayout()
 
         leftButtonLayout = QVBoxLayout()
@@ -40,13 +41,23 @@ class SimpleInterface(QWidget):
         reloadButton.clicked.connect(self.onReload)
         sendButton.clicked.connect(self.onSend)
 
+    def formatConversations(self, conversations):
+        return "\n".join(conversations)
+
+    def updateLabel(self):
+        self.label.setText(f"Conversations:\n{self.formatConversations(self.client.conversations)}")
+
     def onReload(self):
         print("Reload")
+        self.client.Refresh('Sebi')
+        self.updateLabel()
         self.lineEdit.clear()
 
     def onSend(self):
+        self.client.Send_And_Refresh('Sebi', self.lineEdit.text())
         print("Send")
         print("Text:", self.lineEdit.text())
+        self.updateLabel()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -13,6 +13,7 @@ class Client:
         self.manager = None
         self.queue = None
         self.friends = []
+        self.conversations = []
 
     def connect(self):
         QueueManager.register('get_queue')
@@ -51,6 +52,8 @@ class Client:
     def receive_message(self):
         if self.queue:
             message = self.queue.get()
+            conversation = message
+            print("Conversation:" + conversation)
             if isinstance(message, Message):
                 message_lines = message.message.split('\n')
                 print("Received:")
@@ -73,7 +76,6 @@ class Client:
         self.send_message(receiver, message=my_message)
 
     def Refresh(self, receiver):
-        input("Press Enter to refresh")
         self.connect()
         self.send_friend_request()
         self.receive_message()
