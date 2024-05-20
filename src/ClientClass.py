@@ -26,10 +26,10 @@ class Client:
         if self.queue:
             request = Friend_Request(sender=self.sender)
             self.queue.put(request)
-            print(f"Sent: {request}")
             response = self.queue.get()
+            response = response.split("\n")
             self.friends = response
-            print("Friends list updated.")
+
         else:
             print("Queue not connected.")
 
@@ -37,7 +37,6 @@ class Client:
         if self.queue:
             request = Request(sender=self.sender, receiver=receiver, number=number)
             self.queue.put(request)
-            print(f"Sent: {request}")
         else:
             print("Queue not connected.")
 
@@ -45,28 +44,20 @@ class Client:
         if self.queue:
             message = Message(sender=self.sender, receiver=receiver, message=message)
             self.queue.put(message)
-            print(f"Sent: {message}")
         else:
             print("Queue not connected.")
 
     def receive_message(self):
         if self.queue:
             message = self.queue.get()
-            conversation = message
-            print("Conversation:" + conversation)
-            if isinstance(message, Message):
-                message_lines = message.message.split('\n')
-                print("Received:")
-                for line in message_lines[:10]:
-                    print(line)
-            else:
-                print(message)
+            message = message.split("\n")
+            self.conversations = message
+
         else:
             print("Queue not connected.")
             return None
 
-    def print_friends(self):
-        return self.friends
+
 
     def Send_And_Refresh(self, receiver, my_message):
         self.connect()
@@ -77,9 +68,9 @@ class Client:
 
     def Refresh(self, receiver):
         self.connect()
+
         self.send_friend_request()
-        self.receive_message()
-        self.print_friends()
+        
 
         self.send_request(receiver, number=10)
         self.receive_message()

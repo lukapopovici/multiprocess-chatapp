@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
-from Client1 import Client
+from ClientClass import Client
 
 class SimpleInterface(QWidget):
     def __init__(self):
@@ -12,9 +12,10 @@ class SimpleInterface(QWidget):
 
     def initUI(self):
         mainLayout = QVBoxLayout()
-        self.label = QLabel(
-            f"Conversations:\n{self.formatConversations(self.client.conversations)}"
-        )
+        self.textEdit = QTextEdit()
+        self.textEdit.setReadOnly(True)
+        self.updateTextEdit()
+        
         middleLayout = QHBoxLayout()
 
         leftButtonLayout = QVBoxLayout()
@@ -32,7 +33,7 @@ class SimpleInterface(QWidget):
         sendButton = QPushButton('Send')
         bottomButtonLayout.addWidget(reloadButton)
         bottomButtonLayout.addWidget(sendButton)
-        mainLayout.addWidget(self.label)
+        mainLayout.addWidget(self.textEdit)
         mainLayout.addLayout(middleLayout)
         mainLayout.addLayout(bottomButtonLayout)
         self.setLayout(mainLayout)
@@ -41,23 +42,24 @@ class SimpleInterface(QWidget):
         reloadButton.clicked.connect(self.onReload)
         sendButton.clicked.connect(self.onSend)
 
-    def formatConversations(self, conversations):
-        return "\n".join(conversations)
 
-    def updateLabel(self):
-        self.label.setText(f"Conversations:\n{self.formatConversations(self.client.conversations)}")
+    def updateTextEdit(self):
+        self.textEdit.setText(
+            #convert list to string and
+            "\n".join(self.client.conversations)
+            )
+        
+
 
     def onReload(self):
-        print("Reload")
         self.client.Refresh('Sebi')
-        self.updateLabel()
+        self.updateTextEdit()
         self.lineEdit.clear()
 
     def onSend(self):
         self.client.Send_And_Refresh('Sebi', self.lineEdit.text())
-        print("Send")
         print("Text:", self.lineEdit.text())
-        self.updateLabel()
+        self.updateTextEdit()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
