@@ -1,3 +1,5 @@
+#clasa cu ADT-uri pentru mesaje
+
 class Message:
     def __init__(self, sender: str, receiver: str, message: str):
         self.sender = sender

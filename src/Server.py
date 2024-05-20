@@ -9,7 +9,7 @@ class Worker(mp.Process):
         self.message_queue = message_queue
 
     def run(self):
-        self.conn = sqlite3.connect('messages.db')
+        self.conn = sqlite3.connect('../messages.db')
         self.cursor = self.conn.cursor()
         
         self.cursor.execute('''
