@@ -28,7 +28,7 @@ class Worker(mp.Process):
                 print("Case 1: Nu pot sa interpretez")
                 break
             if isinstance(request, Friend_Request):
-                print("Case 4: Request toti oamenii cu care senderul a vorbit")
+                print("Case 4: Request toti oamenii cu care senderul {request.sender} a vorbit")
                 self.cursor.execute('''SELECT DISTINCT receiver FROM messages WHERE sender = ?''', (request.sender,))
                 friends = self.cursor.fetchall()
                 friends_text = "\n".join([f"{friend[0]}" for friend in friends])
@@ -36,7 +36,7 @@ class Worker(mp.Process):
                 self.message_queue.put(response_message)
                 
             if isinstance(request, Request):
-                print("Case 3: Request toate conversatiile cu receiverul")
+                print("Case 3: Request toate conversatiile intre {request.sender} si {request.receiver}")
                 self.cursor.execute('''
                     SELECT sender, receiver, message FROM messages 
                     WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)
@@ -56,6 +56,9 @@ class Worker(mp.Process):
 
             if isinstance(request, Message):
                     print("Case 2: Mesaj de pus in baza de date")
+                    print("[*]")
+                    print("Receiver: ", request.receiver, "Sender: ", request.sender, "Message: ", request.message)
+                    print("[*]")
                     self.cursor.execute('''
                         INSERT INTO messages (sender, receiver, message) VALUES (?, ?, ?)
                     ''', (request.sender, request.receiver, request.message))

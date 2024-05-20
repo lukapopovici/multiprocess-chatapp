@@ -1,10 +1,14 @@
-#SCHELET PENTRU INTEGRAT LOGICA CLIENT
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt5.QtCore import Qt
+from Client1 import Client
 
 class SimpleInterface(QWidget):
     def __init__(self):
         super().__init__()
+        self.client = Client('localhost', 50000, b'your_secret_key', sender='Luka')
+        self.client.RefreshFriends()
+        print("asdasdasdaas")
         self.initUI()
 
     def initUI(self):
@@ -13,12 +17,11 @@ class SimpleInterface(QWidget):
         middleLayout = QHBoxLayout()
 
         leftButtonLayout = QVBoxLayout()
-
-        button1 = QPushButton('Buton 1')
-        button2 = QPushButton('Buton 2')
-
-        leftButtonLayout.addWidget(button1)
-        leftButtonLayout.addWidget(button2)
+        buttons = []
+        for friend in self.client.friends:
+            button = QPushButton(friend)
+            buttons.append(button)
+            leftButtonLayout.addWidget(button)
 
         self.lineEdit = QLineEdit()
         middleLayout.addLayout(leftButtonLayout)
