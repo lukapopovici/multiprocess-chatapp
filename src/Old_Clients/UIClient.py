@@ -29,15 +29,20 @@ class SimpleInterface(QWidget):
         middleLayout.addLayout(leftButtonLayout)
         middleLayout.addWidget(self.lineEdit)
         bottomButtonLayout = QHBoxLayout()
+
         reloadButton = QPushButton('Reload')
         sendButton = QPushButton('Send')
+
         bottomButtonLayout.addWidget(reloadButton)
         bottomButtonLayout.addWidget(sendButton)
+
         mainLayout.addWidget(self.textEdit)
         mainLayout.addLayout(middleLayout)
         mainLayout.addLayout(bottomButtonLayout)
+
         self.setLayout(mainLayout)
-        self.setWindowTitle('UI Proof of Concept')
+
+        self.setWindowTitle('Uestfal EN')
         self.setGeometry(100, 100, 400, 200)
         reloadButton.clicked.connect(self.onReload)
         sendButton.clicked.connect(self.onSend)
@@ -45,7 +50,6 @@ class SimpleInterface(QWidget):
 
     def updateTextEdit(self):
         self.textEdit.setText(
-            #convert list to string and
             "\n".join(self.client.conversations)
             )
         
